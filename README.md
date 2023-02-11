@@ -7,10 +7,12 @@ A simple Nostale ranking API for the French Official server !
 
 https://nodejs.org/en/
 
+## To run the API
+
 0 - Go to /nosranking
 
 1 - type `npm i`
 
 2 - type `node .`
 
-3 - Enjoy !
+3 - Go to http://localhost:55555/?pseudo=Earlam ! Enjoy !
