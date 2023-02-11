@@ -1,38 +1,36 @@
+const { fork } = require("child_process");
 const express = require("express");
 const helmet = require("helmet");
 const app = express();
 app.use(helmet());
-const { fork } = require("child_process");
 app.all('*', async function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     res.header('X-Frame-Options', 'SAMEORIGIN');
+    res.header('Content-Security-Policy', "default-src 'self'");
     next();
 });
 app.get('/', async (req, res) => {
-    let pseudo = req?.query?.pseudo
-    let x = 0;
-    const reput = fork("reputation.js");
-    reput.send(pseudo)
-    let player_reput;
-    reput.on("message", async function (rpt) { player_reput = rpt; x++ });
-    const combat = fork("combat.js");
-    combat.send(pseudo)
+    const pseudo = req?.query?.pseudo;
+    if (!pseudo) return;
+    const combat = fork("etc/combat.js");
+    const reput = fork("etc/reputation.js");
+    const hero = fork("etc/hero.js");
+    const pvp = fork("etc/pvp.js");
+    [combat, reput, hero, pvp].forEach(elem => { elem.send(pseudo) });
     let player_combat;
-    combat.on("message", async function (cbt) { player_combat = cbt ; x++ });
-    const hero = fork("hero.js");
-    hero.send(pseudo)
+    let player_reput;
     let player_hero;
-    hero.on("message", async function (h) { player_hero = h ; x++ });
-    const pvp = fork("pvp.js");
-    pvp.send(pseudo)
     let player_pvp;
-    pvp.on("message", async function (pvpObj) { player_pvp = pvpObj; x++ });
+    combat.on("message", async function (cbtObj) { player_combat = cbtObj });
+    reput.on("message", async function (rptObj) { player_reput = rptObj; });
+    hero.on("message", async function (hObj) { player_hero = hObj; });
+    pvp.on("message", async function (pvpObj) { player_pvp = pvpObj });
     let inter = setInterval( async() => {
-        if (x === 4) {
+        if (player_combat && player_hero && player_reput && player_pvp) {
             res.json({
-                pseudo: pseudo,
+                pseudo,
                 last_update: player_combat.last_update,
                 combat: {lvl: player_combat.lvl, points: player_combat.points, rang: player_combat.rang},
                 hero : player_hero,
@@ -43,4 +41,4 @@ app.get('/', async (req, res) => {
         }
     }, 1);
 });
-app.listen(55555, '127.0.0.1');
+app.listen(55556, '127.0.0.1');
