@@ -8,7 +8,6 @@ app.all('*', async function (req, res, next) {
     res.header('Access-Control-Allow-Methods', 'GET');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     res.header('X-Frame-Options', 'SAMEORIGIN');
-    res.header('Content-Security-Policy', "default-src 'self'");
     next();
 });
 app.get('/', async (req, res) => {
@@ -41,4 +40,4 @@ app.get('/', async (req, res) => {
         }
     }, 1);
 });
-app.listen(55556, '127.0.0.1');
+app.listen(55555, '127.0.0.1');
