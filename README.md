@@ -16,3 +16,7 @@ https://nodejs.org/en/
 2 - type `node .`
 
 3 - Go to http://localhost:55555/?pseudo=Earlam ! Enjoy !
+
+## Now in prod
+I added a database, put the api into production and created a documentation :
+https://nosranking.com
