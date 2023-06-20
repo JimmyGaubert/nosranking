@@ -1,5 +1,5 @@
 # NosRanking API
-A simple Nostale ranking API for the Official server !
+A simple Nostale ranking API for the Official Servers !
 
 ![alt text](https://www.aht.li/3762825/nosranking.png)
 
